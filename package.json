@@ -1,0 +1,21 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "npx nodemon index.ts",
+    "infra": "docker compose  -f infra/docker-compose.yml up --build"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/redis": "^4.0.11",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.14.0",
+    "postgres": "^3.4.5",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
+  }
+}

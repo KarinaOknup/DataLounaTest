@@ -1,0 +1,19 @@
+version: '3.6'
+services:
+  redis:
+    container_name: redis
+    image: docker.io/bitnami/redis:latest
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    ports:
+      - '6379:6379'
+  postgres:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - '5432:5432'
