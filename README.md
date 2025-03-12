@@ -5,9 +5,9 @@ this is test task to company DataLouna.
 hope u spend some time to check my solution.
 
 i spend more than i expected, but 
-    - don't add enough validation 
-    - didn't create migration for tables creation;
-    - i dont get what means 2 min price
+- didn't add enough validation 
+- didn't create migration for tables creation;
+- didn't get what means 2 min price
 
 BUT PLEASE CHECK THINGS WHICH I'VE DONE
 and if u have time explain about what exactly u mean with 2 min prices (i see only one)
@@ -15,10 +15,10 @@ and if u have time explain about what exactly u mean with 2 min prices (i see on
 ## How to start it
 u can see infra folder (it is to start faster)
 steps
-    -  prepare your docker daemon 
-    -  in first terminal run `npm run infra`
-    -  connect to db from pgAdmin or any comfortobale management tool
-    -  create tables and rows, i leave how i did it:
+- prepare your docker daemon 
+- in first terminal run `npm run infra`
+- connect to db from pgAdmin or any comfortobale management tool
+- create tables and rows, i leave how i did it:
     <details open>
     <summary>SQL</summary>
     <pre>
@@ -82,6 +82,7 @@ steps
         ('The Promised Neverland', 5, 110.10, 'active');
     </pre>
     </details>
-    -  in second terminal run `npm run dev`
-    -  dont forget to use in request Auth Bearer token "secret_token" and enjoy roasting my code
+-  in second terminal run `npm run dev`
+-  dont forget to use in request Auth Bearer token "secret_token" and enjoy roasting my code
+
 P.S. Feel free to criticize! Even if my code is so terrible that there's nothing to comment on, I'd still appreciate any feedback :sparkles:
