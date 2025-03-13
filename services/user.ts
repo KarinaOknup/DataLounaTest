@@ -1,14 +1,8 @@
 import db from '../db';
-
-type User = {
-    id: number;
-    name: string;
-    balance: number;
-    status: string;
-}
+import { User } from './types';
 
 async function getBalance(id) {
-    const {rows: users} : {rows: Pick<User,'balance'>[]} = await db.query(`
+    const users : Pick<User,'balance'>[] = await db.query(`
         SELECT balance FROM users
         WHERE id = ${id}
         AND status = 'active'

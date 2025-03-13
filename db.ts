@@ -10,7 +10,10 @@ const pool = new Pool({
 });
 
 const db = {
-  query: (text: string, params?: any[]) => pool.query(text, params),
+  query: async (text: string, params?: any[]) => {
+    const result = await pool.query(text, params);
+    return result;
+  },
   transaction: async (callback) => {
     const client = await pool.connect();
     try {

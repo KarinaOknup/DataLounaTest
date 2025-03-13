@@ -1,6 +1,8 @@
 import db from '../db';
 import userService from './user';
 import productService from './product';
+import { Product, User} from './types';
+
 
 async function create(data: {userId: number; productId: number; count: number}){
     const userBalance = await userService.getBalance(data.userId);
@@ -13,9 +15,11 @@ async function create(data: {userId: number; productId: number; count: number}){
     if ((product.count * product.price) > userBalance) {
         throw new Error('Not enough funds on balance.');
     }
-    let purchaseId
+
+    let purchaseId;
+
     await db.transaction(async (clientDb) => {
-        const { rows: products } = await clientDb.query(
+        const products : Pick<Product,'price' | 'count'>[] = await clientDb.query(
             `SELECT count, price FROM products
                 WHERE id = $1 FOR UPDATE
             `, 
@@ -25,7 +29,7 @@ async function create(data: {userId: number; productId: number; count: number}){
             throw new Error('Not enough products.');
         }
 
-        const { rows: users} = await clientDb.query(
+        const users : Pick<User,'balance'>[] = await clientDb.query(
             `SELECT balance FROM users 
                 WHERE id = $1 FOR UPDATE`, 
             [data.userId]
@@ -48,7 +52,7 @@ async function create(data: {userId: number; productId: number; count: number}){
             [total_price, data.userId]
         );
 
-        const { rows: purchases } = await clientDb.query(
+        const purchases = await clientDb.query(
             `INSERT INTO purchases (user_id, product_id, product_count, total_price, status)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING id`,
