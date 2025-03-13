@@ -1,7 +1,6 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
+import { Request } from '../types';
 import productService from '../services/product';
-import purchaseService from '../services/purchase';
-import userService from '../services/user';
 
 const router = express.Router();
 

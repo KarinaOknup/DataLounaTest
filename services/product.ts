@@ -1,5 +1,5 @@
 import db from '../db';
-import { Product } from './types';
+import { Product } from '../types';
 
 async function list(){
     const products = await db.query(`

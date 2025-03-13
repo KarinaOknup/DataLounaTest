@@ -1,5 +1,5 @@
 import db from '../db';
-import { User } from './types';
+import { User } from '../types';
 
 async function getBalance(id) {
     const users : Pick<User,'balance'>[] = await db.query(`

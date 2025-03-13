@@ -1,7 +1,7 @@
 import db from '../db';
 import userService from './user';
 import productService from './product';
-import { Product, User} from './types';
+import { Product, User} from '../types';
 
 
 async function create(data: {userId: number; productId: number; count: number}){

@@ -1,5 +1,6 @@
 // create purchase
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
+import { Request } from '../types';
 import purchaseService from '../services/purchase';
 import userService from '../services/user';
 
@@ -7,7 +8,7 @@ const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
     const data = {
-        userId: Number(req.body?.user_id),
+        userId: req.user?.id,
         productId: Number(req.body?.product_id),
         count: Number(req.body?.count || 1),
     }
