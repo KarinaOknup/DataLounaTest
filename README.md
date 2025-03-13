@@ -4,13 +4,6 @@ this is test task to company DataLouna.
 
 hope u spend some time to check my solution.
 
-i spend more than i expected, but 
-- didn't add enough validation 
-- didn't get what means 2 min price
-
-BUT PLEASE CHECK THINGS WHICH I'VE DONE
-and if u have time explain about what exactly u mean with 2 min prices (i see only one)
-
 ## How to start it
 u can see infra folder (it is to start faster)
 steps
