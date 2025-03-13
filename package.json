@@ -1,8 +1,13 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "npx nodemon index.ts",
-    "infra": "docker compose  -f infra/docker-compose.yml up --build"
+    "start": "npx nodemon index.ts",
+    "infra": "docker compose  -f infra/docker-compose.yml up --build",
+    "migrate:up": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate up",
+    "migrate:down": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate down",
+    "migrate:redo": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate redo",
+    "migrate:create": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate create",
+    "dev": "npm-run-all --parallel start migrate:up"
   },
   "dependencies": {
     "@types/express": "^5.0.0",
@@ -10,6 +15,8 @@
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
+    "node-pg-migrate": "^7.9.1",
+    "npm-run-all": "^4.1.5",
     "pg": "^8.14.0",
     "postgres": "^3.4.5",
     "redis": "^4.7.0"
