@@ -12,7 +12,7 @@ const pool = new Pool({
 const db = {
   query: async (text: string, params?: any[]) => {
     const result = await pool.query(text, params);
-    return result;
+    return result.rows;
   },
   transaction: async (callback) => {
     const client = await pool.connect();
