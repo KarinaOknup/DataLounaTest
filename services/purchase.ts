@@ -1,8 +1,8 @@
 import db from '../db';
 import userService from './user';
 import productService from './product';
-import { Product, User} from '../types';
 
+import Decimal from 'decimal.js';
 
 async function create(data: {userId: number; productId: number; count: number}){
     const userBalance = await userService.getBalance(data.userId);
@@ -12,53 +12,76 @@ async function create(data: {userId: number; productId: number; count: number}){
         throw new Error('Not enough products.');
     }
 
-    if ((product.count * product.price) > userBalance) {
+    if (!new Decimal(product.count).mul(product.price).lessThan(userBalance)) {
         throw new Error('Not enough funds on balance.');
     }
-
     let purchaseId;
 
-    await db.transaction(async (clientDb) => {
-        const products : Pick<Product,'price' | 'count'>[] = await clientDb.query(
-            `SELECT count, price FROM products
-                WHERE id = $1 FOR UPDATE
-            `, 
-            [data.productId]
+    await db.$transaction(async (tx) => {
+        const product  = await tx.product.findFirst({
+            where: {
+                id: data.productId
+            },
+            select: {
+                count: true,
+                price: true,
+            },
+        }
         );
-        if (!products.length || products[0].count < data.count) {
+        if (!product || product.count < data.count) {
             throw new Error('Not enough products.');
         }
 
-        const users : Pick<User,'balance'>[] = await clientDb.query(
-            `SELECT balance FROM users 
-                WHERE id = $1 FOR UPDATE`, 
-            [data.userId]
+        const user = await tx.user.findFirst({
+            where: {
+                id: data.userId
+            },
+            select: {
+                balance: true,
+            },
+        }
         );
-        const total_price = products[0].price * data.count;
 
-        if (!users.length || users[0].balance < total_price) {
+        const total_price = new Decimal(product.price).mul(data.count);
+
+        console.log('1', user.balance, total_price);
+
+        if (!user || (!total_price.lessThan(user.balance))) {
             throw new Error('Not enough funds on balance.');
         }
 
-        await clientDb.query(
-            `UPDATE products SET count = count - $1
-                WHERE id = $2`, 
-            [data.count, data.productId]
-        );
+        await tx.product.update({
+            where: {
+                id: data.productId,
+            },
+            data: {
+              count: {
+                decrement: data.count
+              }
+            },
+          });
 
-        await clientDb.query(
-            `UPDATE users SET balance = balance - $1
-                WHERE id = $2`, 
-            [total_price, data.userId]
-        );
+        await tx.user.update({
+            where: {
+                id: data.userId,
+            },
+            data: {
+                balance: {
+                    decrement: total_price
+                }
+            },
+        })
+        const purchase = await tx.purchase.create({
+            data: {
+                userId: data.userId,
+                productId: data.productId,
+                productCount: data.count,
+                totalPrice: total_price,
+                status: 'pending'
+            },
+        })
 
-        const purchases = await clientDb.query(
-            `INSERT INTO purchases (user_id, product_id, product_count, total_price, status)
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id`,
-            [data.userId, data.productId, data.count, total_price, 'pending']
-        );
-        purchaseId = purchases[0].id;
+        purchaseId = purchase.id;
     })
 
     return purchaseId;

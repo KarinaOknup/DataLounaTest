@@ -1,18 +1,22 @@
 import db from '../db';
-import { User } from '../types';
 
-async function getBalance(id) {
-    const users : Pick<User,'balance'>[] = await db.query(`
-        SELECT balance FROM users
-        WHERE id = ${id}
-        AND status = 'active'
-    `); 
+async function getBalance(userId) {
+    const user = await db.user.findFirst({
+        where: {
+            id: userId,
+            status: 'active'
+        },
+        select: {
+            balance: true,
+        },
+    }
+    );
 
-    if (!users[0]) {
+    if (!user) {
         throw new Error('User don\'t exist.');
     }
 
-    return users[0].balance;
+    return user.balance;
 }
 
 export default {

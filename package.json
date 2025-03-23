@@ -1,28 +1,32 @@
 {
   "type": "module",
   "scripts": {
-    "start": "npx nodemon index.ts",
+    "start": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres npx nodemon",
     "infra": "docker compose  -f infra/docker-compose.yml up --build",
-    "migrate:up": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate up",
-    "migrate:down": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate down",
-    "migrate:redo": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate redo",
-    "migrate:create": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  node-pg-migrate create",
+    "migrate:up": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres prisma migrate dev",
+    "migrate:create": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres  prisma migrate dev --name",
+    "migrate:create_custom": "DATABASE_URL=postgresql://root:root@127.0.0.1:5432/postgres prisma migrate dev --create-only",
     "dev": "npm-run-all --parallel start migrate:up"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "@types/express": "^5.0.0",
     "@types/redis": "^4.0.11",
     "body-parser": "^1.20.3",
+    "decimal.js": "^10.5.0",
     "express": "^4.21.2",
     "node-fetch": "^3.3.2",
     "node-pg-migrate": "^7.9.1",
     "npm-run-all": "^4.1.5",
-    "pg": "^8.14.0",
     "postgres": "^3.4.5",
     "redis": "^4.7.0"
   },
   "devDependencies": {
+    "@types/node": "^22.13.11",
     "nodemon": "^3.1.9",
-    "ts-node": "^10.9.2"
+    "prisma": "^6.5.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }

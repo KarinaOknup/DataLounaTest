@@ -1,26 +1,39 @@
 import db from '../db';
-import { Product } from '../types';
 
 async function list(){
-    const products = await db.query(`
-        SELECT name, count, price FROM products
-        WHERE status = 'active'
-    `);
+    const products = await db.product.findMany({
+        where: {
+            status: 'active'
+        },
+        select: {
+            name: true,
+            count: true,
+            price: true,
+        },
+    }
+    );
+
     return products
 }
 
-async function getById(id) {
-    const  products : Pick<Product,'price' | 'count'>[] = await db.query(`
-        SELECT price, count FROM products
-        WHERE id = ${id}
-        AND status = 'active'
-    `);
+async function getById(productId) {
+    const product = await db.product.findFirst({
+        where: {
+            id: productId,
+            status: 'active'
+        },
+        select: {
+            count: true,
+            price: true,
+        },
+    }
+    );
 
-    if (!products[0]) {
+    if (!product) {
         throw new Error('Product don\'t exist.');
     }
 
-    return products[0];
+    return product;
 }
 
 export default {
